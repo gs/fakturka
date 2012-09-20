@@ -1,0 +1,90 @@
+create table kontrahent(
+	id INTEGER NOT NULL PRIMARY KEY,
+	nazwa varchar(100) NOT NULL,
+	nip varchar(20) NOT NULL,
+	ulica_nr varchar(50) NOT NULL,
+	kod varchar(10) NOT NULL,
+	miejscowosc varchar(40) NOT NULL,
+	panstwo varchar(20) NOT NULL default 'Polska',
+	osoba_up varchar(100) NOT NULL,
+	created_on timestamp(14) NOT NULL,
+	updated_on timestamp(14) NOT NULL,
+    regon varchar(20) NOT NULL,
+    user_id int(5) not null default 0
+);
+
+create table towar(
+	id INTEGER  NOT NULL PRIMARY KEY,
+	nazwa_towaru varchar(50) NOT NULL ,
+	symbol_towaru varchar(50) NOT NULL , 
+	opis_towaru text NOT NULL, 
+	ilosc_towaru int(100) NOT NULL default 0, 
+	cena_netto varchar(100) NOT NULL default 0, 
+	podatek varchar(20) NOT NULL default 0,
+	cena_brutto varchar(100) NOT NULL default 0,
+	done int(5) NOT NULL default 0,
+	created_on timestamp(14) NOT NULL default 0, 
+	updated_on timestamp(14) NOT NULL default 0,
+	user_id int(10) NOT NULL default 0
+	);
+	
+create table faktury(
+	id INTEGER NOT NULL PRIMARY KEY,
+	nr_faktury varchar(100) NOT NULL,
+	id_towaru smallint(5) NOT NULL,
+	f_ilosc_towaru int(100) NOT NULL,
+	f_ctn varchar(20) NOT NULL,
+	pod smallint(10) NOT NULL,
+	f_wys_pod varchar(100) NOT NULL,
+	f_ctb varchar(20) NOT NULL,
+	f_stb varchar(20) NOT NULL,
+	created_on varchar(40) NOT NULL,
+	updated_on varchar(40) NOT NULL,
+	FOREIGN KEY(id_towaru) REFERENCES towar(id)
+	);
+	
+	CREATE TABLE fak_kont_suma(
+        id INTEGER NOT NULL PRIMARY KEY,
+        nr_faktury INTEGER NOT NULL,
+        id_wystawcy smallint(5) NOT NULL,
+        id_kontrahenta smallint(5) NOT NULL,
+        suma_faktury varchar(50) NOT NULL,
+        data_wystawienia varchar(50) NOT NULL,
+        data_sprzedazy varchar(50) NOT NULL,
+        termin varchar(50) NOT NULL,
+        stan_faktury varchar(50) NOT NULL,
+        forma_platnosci varchar(50) NOT NULL, 
+        miejsce_w varchar(100), 
+        rabat int(3) NOT NULL default 0, 
+        user_id int(5) not null default 0,
+        FOREIGN KEY(id_kontrahenta) REFERENCES kontrahent(id),
+        FOREIGN KEY(nr_faktury) REFERENCES faktury(nr_faktury)
+
+);
+
+CREATE TABLE wystawca(
+        id INTEGER NOT NULL PRIMARY KEY,
+        nazwa varchar(100) NOT NULL,
+        nip varchar(20) NOT NULL,
+        ulica_nr varchar(50) NOT NULL,
+        kod varchar(10) NOT NULL,
+        miejscowosc varchar(40) NOT NULL,
+        panstwo varchar(20) NOT NULL default 'Polska',
+        osoba_up varchar(100) NOT NULL,
+        created_on timestamp(14) NOT NULL,
+        updated_on timestamp(14) NOT NULL,
+        regon varchar(20) NOT NULL,
+        bank varchar(100) NOT NULL,
+        nr_konta varchar(100) NOT NULL default 0,
+		user_id int(10) not null default 0);
+
+create table tymczasowa(
+	id INTEGER NOT NULL PRIMARY KEY,
+	id_t int(100) NOT NULL default 0,
+	t_cena_netto varchar(100) NOT NULL default 0,
+	t_ilosc int(100) NOT NULL default 0,
+	t_podatek varchar(20) NOT NULL default 0,
+	t_cena_brutto varchar(100) NOT NULL default 0,
+	t_ord varchar(20) NOT NULL default 0,
+	t_user_id int(10) NOT NULL default 0
+);

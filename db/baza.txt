@@ -1,0 +1,142 @@
+BEGIN TRANSACTION;
+CREATE TABLE kontrahent(	id INTEGER NOT NULL PRIMARY KEY,	nazwa varchar(100) NOT NULL,	nip varchar(20) NOT NULL,	ulica_nr varchar(50) NOT NULL,	kod varchar(10) NOT NULL,	miejscowosc varchar(40) NOT NULL,	panstwo varchar(20) NOT NULL default 'Polska',	osoba_up varchar(100) NOT NULL,	created_on timestamp(14) NOT NULL,	updated_on timestamp(14) NOT NULL, regon varchar(30) default null, user_id int(5) not null default 0);
+CREATE TABLE wystawca(
+	id INTEGER NOT NULL PRIMARY KEY,
+	nazwa varchar(100) NOT NULL,
+	nip varchar(20) NOT NULL,
+	ulica_nr varchar(50) NOT NULL,
+	kod varchar(10) NOT NULL,
+	miejscowosc varchar(40) NOT NULL,
+	panstwo varchar(20) NOT NULL default 'Polska',
+	osoba_up varchar(100) NOT NULL,
+	created_on timestamp(14) NOT NULL,
+	updated_on timestamp(14) NOT NULL,
+    regon varchar(20) NOT NULL,
+    bank varchar(100) NOT NULL,
+    nr_konta varchar(100) NOT NULL default 0,
+    user_id int(10) not null default 0);
+CREATE TABLE faktury(
+	id INTEGER NOT NULL PRIMARY KEY,
+	nr_faktury varchar(100) NOT NULL,
+	id_towaru smallint(5) NOT NULL,
+	f_ilosc_towaru int(100) NOT NULL,
+	f_ctn varchar(20) NOT NULL,
+	pod smallint(10) NOT NULL,
+	f_wys_pod varchar(100) NOT NULL,
+	f_ctb varchar(20) NOT NULL,
+	f_stb varchar(20) NOT NULL,
+	created_on varchar(40) NOT NULL,
+	updated_on varchar(40) NOT NULL,
+    user_id int(10) not null default 0,
+	FOREIGN KEY(id_towaru) REFERENCES towar(id)
+	);
+CREATE TABLE fak_kont_suma(
+	id INTEGER NOT NULL PRIMARY KEY,
+	nr_faktury varchar(100) NOT NULL,
+        id_wystawcy smallint(5) NOT NULL,
+	id_kontrahenta smallint(5) NOT NULL,
+	suma_faktury varchar(50) NOT NULL,
+        data_wystawienia varchar(50) NOT NULL,
+        data_sprzedazy varchar(50) NOT NULL,
+        termin varchar(50) NOT NULL,
+	stan_faktury varchar(50) NOT NULL,
+	forma_platnosci varchar(50) NOT NULL, miejsce_w varchar(100), rabat int(3) NOT NULL default 0, user_id int(5) not null default 0,
+	FOREIGN KEY(id_kontrahenta) REFERENCES kontrahent(id),
+	FOREIGN KEY(nr_faktury) REFERENCES faktury(nr_faktury)
+);
+CREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "login" varchar(255) DEFAULT NULL NULL, "email" varchar(255) DEFAULT NULL NULL, "crypted_password" varchar(40) DEFAULT NULL NULL, "salt" varchar(40) DEFAULT NULL NULL, "created_at" datetime DEFAULT NULL NULL, "updated_at" datetime DEFAULT NULL NULL, "remember_token" varchar(255) DEFAULT NULL NULL, "remember_token_expires_at" datetime DEFAULT NULL NULL);
+CREATE TABLE tymczasowa(id INTEGER NOT NULL PRIMARY KEY,	id_t int(100) NOT NULL default 0,	t_cena_netto varchar(100) NOT NULL default 0,	t_ilosc int(100) NOT NULL default 0, t_jm varchar(20) NOT NULL default "SZT".,	t_podatek varchar(20) NOT NULL default 0,	t_cena_brutto varchar(100) NOT NULL default 0,	t_ord varchar(20) NOT NULL default 0,	t_user_id int(10) NOT NULL default 0);
+CREATE TABLE towar(
+	id INTEGER  NOT NULL PRIMARY KEY,
+	nazwa_towaru varchar(50) NOT NULL ,
+	symbol_towaru varchar(50) NOT NULL ,
+	opis_towaru text NOT NULL,
+	ilosc_towaru int(100) NOT NULL default 0,
+	jm varchar(20) NOT NULL default "SZT.",
+	cena_netto varchar(100) NOT NULL default 0,
+	podatek varchar(20) NOT NULL default 0,
+	cena_brutto varchar(100) NOT NULL default 0,
+	done int(5) NOT NULL default 0,
+	created_on timestamp(14) NOT NULL default 0,
+	updated_on timestamp(14) NOT NULL default 0,
+        user_id int(10) NOT NULL default 0
+	);
+COMMIT;
+alter table towar add jm varchar(5) NOT NULL default "SZT.";
+alter table tymczasowa add t_jm varchar(5);
+alter table faktury add jm varchar(5);
+alter table kontrahent add tel varchar(100);
+alter table kontrahent add auto varchar(100);
+--20-10-2008 dodanie nr porzadkowego z pozycji do faktury(usuniecie bledu z wpisywaniem do bazy przy dublujacych sie towarach i ich danych)
+alter table faktury add poz int(100) not null default 0;
+
+--28-10-2008 dodanie pola do wzoru numeracji faktur dla firmy oraz dodanie id_wystawcy do faktur, tymczasowa - wielu wystawcow ten sam nr faktur
+alter table wystawca add wzor varchar(10);
+alter table faktury add id_wystawcy int(10);
+alter table tymczasowa add id_wystawcy int(10);
+
+--03-11-2008 dodanie nazwy towaru do faktur oraz do tymczasowych
+alter table tymczasowa add t_nazwa_towaru varchar(100);
+alter table faktury add nazwa_towaru varchar(100);
+alter table tymczasowa add t_symbol_towaru varchar(100);
+alter table faktury add symbol_towaru varchar(100);
+
+--05-11-2008 dodanie pozycji do fak_kont_suma aby faktury byly sortowane wg numerow
+alter table fak_kont_suma add pozycja int(100);
+--teraz aktualizacja update fak_kont_suma set pozycja = 1 where id = ;
+
+--zmiana formatu dla kolumy nr_faktury w tabeli fak_kont_suma
+alter table faktury add user_id int(10) not null default 0;
+
+--dodanie uwag do faktury
+alter table fak_kont_suma add uwagi text;
+
+
+
+
+
+CREATE TABLE kontrahent_fakturowany
+(	id INTEGER NOT NULL PRIMARY KEY,
+id_k INTEGER NOT NULL,
+nr_faktury varchar(100) NOT NULL,
+nazwa varchar(100) NOT NULL,
+nip varchar(20) NOT NULL,
+	ulica_nr varchar(50) NOT NULL,
+	kod varchar(10) NOT NULL,
+	miejscowosc varchar(40) NOT NULL,
+	panstwo varchar(20) NOT NULL default 'Polska',
+	osoba_up varchar(100) NOT NULL,
+	created_on timestamp(14) NOT NULL,
+	updated_on timestamp(14) NOT NULL,
+	regon varchar(30) default null,
+	user_id int(5) not null default 0,
+	tel varchar(100),
+     auto varchar(100),
+     FOREIGN KEY(id_k) REFERENCES kontrahent(id));
+
+
+CREATE TABLE wystawca_fakturowany(
+	id INTEGER NOT NULL PRIMARY KEY,
+	id_w integer NOT NULL,
+	nr_faktury varchar(100) not null,
+	nazwa varchar(100) NOT NULL,
+	nip varchar(20) NOT NULL,
+	ulica_nr varchar(50) NOT NULL,
+	kod varchar(10) NOT NULL,
+	miejscowosc varchar(40) NOT NULL,
+	panstwo varchar(20) NOT NULL default 'Polska',
+	osoba_up varchar(100) NOT NULL,
+	created_on timestamp(14) NOT NULL,
+	updated_on timestamp(14) NOT NULL,
+    regon varchar(20) NOT NULL,
+    bank varchar(100) NOT NULL,
+    nr_konta varchar(100) NOT NULL default 0,
+    user_id int(10) not null default 0,
+     wzor varchar(10),
+     FOREIGN KEY(id_w) REFERENCES wystawca(id)
+     );
+
+--dodać poniższe dane
+-- INSERT INTO "wystawca_fakturowany" VALUES(1, 1, '', 'Delikatesy SAGA S.C. <br>J.Wojciechowski M.Smajdor','PL 734-10-14-751','Nawojowska 165','33-300','Nowy Sącz','Polska','','2008-10-09 18:59:23','2010-05-28 08:41:37','','Multibank','49 1140 2017 0000 4602 0463 7239',1,'09/H');
+-- INSERT INTO "wystawca_fakturowany" VALUES(2, 2, '','"SAGA" Spółka Cywilna <br>Marek Smajdor, Józef Wojciechowski','PL-734-10-14-751','Nawojowska 165','33-300','Nowy Sącz','Polska','','2009-01-08 18:50:12','2010-05-29 14:37:57','','Multibank','49 1140 2017 0000 4602 0463 7239',1,'10/H');
+
