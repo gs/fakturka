@@ -1,0 +1,28 @@
+{
+    'name': 'Captcha',
+    'type': 'flickr',
+    'version': '1.0',
+    'image': 'images/flickr-captcha.jpg',
+    'description': 'Is a catcha using flickr images.',
+    'args': [
+          	{'repeatCharacters': {'type':'BOOLEAN', 'defaultValue': 'false', 'description':'Whether or not to use unquie images for each character.'}},
+               {'size': {'type':'NUMBER', 'defaultValue': 50,
+                  'values': [
+                    {'name' : '25', 'value' : 25, 'description' : 'Small.'},
+                    {'name' : '50', 'value' : 50, 'description' : 'Medium.'},
+                    {'name' : '75', 'value' : 75, 'description' : 'Large.'} ], 
+		  'description':'The block size to display.'}},
+          {'apikey': {'type':'STRING', 'defaultValue': '', 'description':'The flickr API key.'}}
+            ],
+    'config' : {
+        'type' :
+           { 'id' : 'jmakicaptcha',
+             'libs' : [ '../resources/libs/flickr/common.js' ]
+        }
+    },
+    'topicInfo': {
+	'type' : 'publish',
+	'topicName' : '/flickr/captcha',
+	'description': 'Publish true or false depending on whether the there is a match'
+    }
+}

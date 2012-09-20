@@ -1,0 +1,180 @@
+<HTML>
+
+<% if params["to_p"] == 'yes' %>
+  <BODY BGCOLOR="white" onload="print()">
+<% else %>
+  <BODY BACKGROUND="white" BGCOLOR="white" >
+<% end %>
+<table><tr><td>
+      <%if params[:to_p]!="yes"%>
+        <% if params[:skad] %>
+          <%= link_to 'Wróć', :action=>'history', :id_w => @id_w  %> |
+          <%= link_to "<font color='red'>EDYTUJ</font>", :action => 'new', :id_k => @id_k, :id_w => @id_w, :z_print => 'tak', :nr_faktury => @nr_faktury %> |
+        <% else %>
+          <%= link_to "<font color='red'>Wróć do edycji</font>", :action => 'new', :q=>'true' %> |
+          <%= link_to 'Menu główne', :action=>'list', :r => 'true' %> |
+        <% end %>
+        <%= link_to 'Drukuj', {:action=>'show', :id=>@nr_faktury, :to_p => "yes", :id_k => @id_k, :id_w=>@id_w}, :target=>'_blank'%>
+      <% end %>
+  </td</tr>
+</table>
+<table border='0' bgcolor='white' width='100%' valign='top'>
+<tr>
+<td align='center' width='60%'><center><font size="5"><b>Faktura VAT nr: <%= @nr_faktury %></b></center></font><b><small><small>ORYGINAŁ &nbsp;&nbsp;/&nbsp;&nbsp; KOPIA&nbsp;&nbsp; / &nbsp;&nbsp;DUPLIKAT</small></small><br></td>
+<td align='right' width='35%'><small>Miejsce wystawienia:    <%= @m_w %><br>
+    Data wystawienia:   <%= @data_w %><br>
+  Data sprzedaży:    <%=  @data_s %></small><br><br><br><br>
+</td>
+</tr>
+</table>
+<table border='1'  RULES=groups FRAME=void bgcolor='white' align='center' width='80%' valign='top'>
+  <tr>
+    <th align='left' width='30%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>Sprzedawca:</small></th>
+    <th align='left' width='30%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>Odbiorca:</small></th>
+
+  </tr>
+  <tr>
+  <!--dane wystawcy -->
+    <td  align='left'><small><% if @wf %>
+          <b>&nbsp;&nbsp; <%=  @wf.nazwa %></b><br><br>
+          &nbsp;&nbsp;<%= @wf.kod %> <%= @wf.miejscowosc%> <br>
+          &nbsp;&nbsp;<%= @wf.ulica_nr %><br>
+		<% if @wf.nip!="" %>
+          &nbsp;&nbsp;NIP: <%=  @wf.nip %><br><br>
+		<% end %>
+		<% if @wf.regon!="" %>
+          &nbsp;&nbsp;Regon: <%=  @wf.regon %><br><br>
+		<% end %>
+          &nbsp;&nbsp;Bank: <%= @wf.bank%><br>&nbsp;&nbsp;Nr konta: <%= @wf.nr_konta %>
+        <%end%>
+      </small>
+    </td>
+    <td align='left' width='10%'>
+    <!-- dane odbiorcy (kontrahenta) -->
+      <% if @kf %><small>
+          <b>&nbsp;&nbsp;<%=  @kf.nazwa %></b><br><br>
+          &nbsp;&nbsp;<%= @kf.kod %> <%= @kf.miejscowosc%> <br>
+          &nbsp;&nbsp;<%= @kf.ulica_nr %><br>
+          <% if @kf.regon!="" %>
+		    &nbsp;&nbsp;Regon: <%= @kf.regon %><br />
+		<% end %>
+    <% if @kf.panstwo == "Polska" %>
+
+		<% if @kf.nip!=""%>
+            &nbsp;&nbsp;NIP: <%=  @kf.nip %>
+		<% end %>
+          <% else %>
+		<% if @kf.nip %>
+            &nbsp;&nbsp;NIP: <%=  @kf.nip %><br />
+		<% end %>
+            &nbsp;&nbsp;Samochód nr. rej.: <%= @kf.auto %>
+          <% end  %>
+        <%end%>
+        <br><br>
+      </small>
+
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><br><br>
+    Forma płatności: <b><%= @fp %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Termin zapłaty: <b><%= @termin %></b><br><br></td>
+  </tr>
+
+
+</table>
+<table border='1'  RULES=all FRAME=above bgcolor='white' align='center' width=100%'>
+  <tr>
+    <th  width='2%' align='left'><small>LP.</small></th>
+    <th width='15%'align='left'><small>Nazwa towaru - usługa</small></th>
+    <th width='10%' align='left'><small>Symbol PKWiU</small></th>
+    <th width='2%' align='left'><small>Ilość</small></th>
+    <th width='1%' align='left'><small>JM</small></th>
+    <th width='5%' align='right'><small>Cena netto</small></th>
+    <th width='5%' align='right'><small>Wartość netto</small></th>
+    <th width='3%' align='right'><small>Vat</small></th>
+    <th width='5%' align='right'><small>Cena brutto</small></th>
+    <th width='5%' align='right'><small>Wartość Vat</small></th>
+
+    <th width='7%' align='right'><small>Wartość brutto</small></th>
+  </tr>
+
+  <tr>
+    <% @pozycja.each_with_index do |item, i| %>
+      <tr>
+        <td width='2%' align="left"><small><%= i.to_i + 1  %></small> </td>
+        <%if item.nazwa_towaru.to_s != "" %>
+            <td width='15%' align="left"><small><%= item.nazwa_towaru%></small></td>
+            <td width='10%' align="left"><small><%= item.symbol_towaru%></small></td>
+        <% else  %>
+            <td width='15%' align="left"><small><%= item.tnazwa_towaru%></small></td>
+            <td width='10%' align="left"><small><%= item.tsymbol_towaru%></small></td>
+        <% end %>
+        <td width='2%' align="left"><small><%= item.f_ilosc_towaru %></small></td>
+        <td width='1%' align="left"><small><%= item.jm %></small></td>
+        <td width='5%' align="right"><small><%= display_s(item.f_ctn) %></small></td>
+        <td width='5%' align="right"><small><%= display_s(item.f_ctn.to_f * item.f_ilosc_towaru.to_f) %></small></td>
+        <td width='3%' align="right"><small><%= item.podatek %> % </small></td>
+        <td width='5%' align="right"><small><%= display_s(item.f_ctn.to_f * (1 + (item.podatek.to_f/100))) %></small></td>
+        <td width='5%' align="right"><small><%= display_s((item.f_ctn.to_f * item.f_ilosc_towaru.to_i) * item.podatek.to_f / 100) %></small></td>
+
+        <td width='7%' align="right"><small><%= display_s((item.f_ctn.to_f * item.f_ilosc_towaru.to_i) * (1 + (item.podatek.to_f / 100))) %> </small></td>
+      </tr>
+    <%  end %>
+  </tr>
+  <tr align='right'>
+    <td colspan=5  rowspan=<%= @podlicz_sume.length + 3%>></td>
+    <th align='right' rowspan=<%= @podlicz_sume.length + 1%>> <br><br></th>
+    <th width='7%' align='right'><small><br><br><br>Wartość netto</small></th>
+    <th width='3%' align='right'><small><br><br><br>Vat</small></th>
+    <th width='10%' align='right' colspan='2'><small><br><br><br>Wartość VAT</small></th>
+    <th width='10%' align='right'><small><br><br><br>Wartość brutto</small></th>
+  </tr>
+  <% @podlicz_sume.each do |item| %>
+    <tr align='right'>
+      <td width='7%' align="right"><small><%= display_s(item.stn) %></small></td>
+      <td width='3%' align="right"><small><%= item.pod %> %</small></td>
+      <td width='10%' align="right" colspan='2'><small><%= display_s(item.s_pod) %></small></td>
+      <td width='10%' align="right"><small><%= display_s(item.stn.to_f + item.s_pod.to_f) %></small></td>
+    </tr>
+  <% end %>
+  <tr align='right'>
+    <td align="right"><small><b>Razem:</b></small></td>
+    <td align="right"><small><b><%= display_s(@s_netto) %></b></small></td>
+    <td align="right"><small><b>X</b></small></td>
+    <td align="right" colspan='2'><small><b><%= display_s(@s_ptu) %></b></small></td>
+    <td align="right" ><small><b><%= display_s(@s_brutto) %></b></small></td>
+  </tr>
+</table>
+<table bgcolor='white' width='100%' align='left'>
+  <tr>
+    <td colspan='9'><br>
+      <% if @rabat.to_i > 0 %>
+        <font size='2'>Razem : <%= display_s(@suma_faktury) %> zł</font><br><br>
+        <font size='2'>Rabat : <%= @rabat %> %</font><br><br>
+        <font size='4'><b>Razem do zapłaty po rabacie: <%= display_s(@suma_rabat) %> zł</b></font><br>
+      <% else %>
+        <font size='4'><b>Razem do zapłaty: <%= display_s(@suma_faktury) %> zł</b></font><br>
+      <% end %>
+      <small>Słownie: <%= @sf_text %></small>
+
+    </td>
+  </tr>
+  <tr>
+    <td colspan='3' align='center'><small><br><br>................................................<br><br>
+    <p><small><small>Podpis osoby upoważnionej do odebrania faktury</small></small></p></td>
+
+    <td colspan='3' align='center'><small><br><br>................................................<br></small>
+    <p><small><small>Data odbioru</small></small></p></td>
+    <td colspan='3' align='center'><small><br><br>...............................................<br><br>
+
+  <p><small><small>Podpis osoby upoważnionej do wystawienia faktury</small></small></p></td></tr>
+  <% if @kf.panstwo != "Polska" %>
+    <tr><td colspan='7'><br><br><br><br>Potwierdzam, że dostarczyłem towar zakupiony wg f-ry nr:............................<br><br>do mojego sklepu/magazynu zlokalizowanego w .............................................<br><br>
+      samochodem nr rej. .............................................<br><br>Podpis:...........................................
+    </tr>
+  <% end %>
+  <% if @uwagi %>
+    <tr><td colspan="7" border="1"><br/><br/>&nbsp;&nbsp;<small>Uwagi:<br/>&nbsp;&nbsp; <%= @uwagi %> </small></td></tr>
+  <% end %>
+</table>
+

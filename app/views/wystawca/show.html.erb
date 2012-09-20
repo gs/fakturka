@@ -1,0 +1,8 @@
+<% for column in Wystawca.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @wystawca.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Zmień',:action => 'edit', :id => @wystawca %> |
+<%= link_to 'Wróć', :action => 'index' %>

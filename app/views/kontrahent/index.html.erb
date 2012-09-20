@@ -1,0 +1,59 @@
+<%= link_to "<h1> Menu główne </h2>", :controller => 'fakturka', :action => 'index' %>
+
+<hr>
+<h2> Lista odbiorców </h2>
+
+<%= link_to 'Nowy Odbiorca', :action => 'new' %>
+<br>
+
+<br/>
+
+<%= text_field_tag :kont %>
+
+<%= observe_fields "kont", :url => { :action =>'szukaj_kontrahenta'}, :frequency => 1, :update => 'wynik'%>
+
+
+<div id='wynik'>
+
+</div>
+<br/>
+<br/>
+
+
+<table BORDER=1 CELLPADDING=3 CELLSPACING=1 RULES=ROWS FRAME=HSIDES>
+  <tr>
+  <th>Nazwa odbiorcy:</th>
+  <th>Ulica numer:</th>
+  <th>Kod:</th>
+  <th>Miejscowość:</th>
+  <th>Osoba upoważniona</th>
+  <th>Nip:</th>
+  <th>Regon:</th>
+</tr>
+
+
+<% @kontrahent.each do |k| %>
+<tr>
+  <% if session['f'] %>
+<td><%= link_to "<font color=\"green\">#{k.nazwa}</font>", :controller => 'fakturka', :action=>'kontrahent', :id=>k.id, :f => 'tak' %>
+<% else %>
+<td><%= link_to k.nazwa, :action=>'show', :id => k.id %> </td>
+<% end %>
+<td><%= k.ulica_nr %> </td>
+<td><%= k.kod %></td>
+<td><%= k.miejscowosc %> </td>
+<td><%= k.osoba_up %>   </td>
+<td><%= k.nip %></td>
+<td><%= k.regon %> </td>
+<td><%= link_to "Zmień", :action=>'edit', :id => k.id %> </td>
+<td><%= link_to "Usuń", :action=>'delete', :id =>k.id %> </td>
+<% if session['f'] %>
+<td><%= link_to "Zobacz", :action=>'show', :id => k.id %> </td>
+<% end  %>
+</tr>
+<% end %>
+</table>
+<br>
+<%= will_paginate @kontrahent %>
+<%= set_focus 'kont' %>
+

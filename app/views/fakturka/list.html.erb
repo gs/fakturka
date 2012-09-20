@@ -1,0 +1,14 @@
+<h1> Menu główne </h1>
+ 
+<!-- <% if @zalegle != 0%> Ilosc faktur nie opłaconych: <font color='red'><%= link_to @zalegle, :action =>'firma'%></font><% end %> -->
+
+<h3><li> <%= link_to 'Nowa Faktura', :controller=> 'fakturka', :action => 'new' %> </li></h3>
+
+<li> <%= link_to 'Faktury Wystawione', :controller=> 'fakturka', :action => 'firma' %> </li>
+<hr/>
+<li> <%= link_to 'Wystawcy', :controller=> 'wystawca', :action => 'index' %> </li>
+<li> <%= link_to 'Odbiorcy', :controller=> 'kontrahent', :action => 'index' %> </li>
+<li> <%= link_to 'Towary', :controller => 'towar', :action => 'list' %></li>
+<br/><br/>
+
+<h4><br/><br/><%= link_to 'Koniec', {:controller => 'login', :action => 'logout'}, :confirm => 'Czy koniec?' %></h4>

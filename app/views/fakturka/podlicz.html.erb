@@ -1,0 +1,40 @@
+<head>
+ <%= calendar_date_select_includes :style => "red", :format=>:finnish , :locale=>'pl' %>
+  <script>
+      function showPreloading() {
+          var preloadingDiv = document.getElementById("preloading");
+          preloadingDiv.style.display = "block";
+          window.location = "new";
+      }
+
+  </script>
+</head>
+<%= link_to "Wróć", :action => 'history', :id_w => params[:id_w] %><br><br>
+<hr />
+<h2>Wprowadź daty aby zobaczyć podsumowanie faktur za dany okres</h2>
+<% form_tag("/fakturka/podlicz", :method => 'get') do %>
+  <%= hidden_field_tag :id_w, params[:id_w] %>
+  <%= calendar_date_select_tag "from", params["from"]%>
+  <%= calendar_date_select_tag "to", params["to"]%>
+  <%= submit_tag "Podlicz"  %>
+<% end %>
+
+
+<hr />
+<% if @suma %>
+  <h2>Suma faktur za okres <%= params["from"] %> - <%= params["to"] %></h2>
+  <table border="0" width="30%">
+    <tr align="right">
+      <th>Netto</th>
+      <th>Brutto</th>
+      <th>Vat</th>
+    </tr>
+    <% @suma.each do |s| %>
+      <tr align="right">
+        <td><%= display_s(s.netto) %></td>
+        <td><%= display_s(s.brutto) %></td>
+        <td><%= s.pod %> %</td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

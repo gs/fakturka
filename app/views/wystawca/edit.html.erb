@@ -1,0 +1,9 @@
+
+<% form_tag :action =>'change' , :id => @wystawca do %>
+<%= render :partial => 'form' %>
+    <%= submit_tag 'Zmień'%>
+<!--[eoform:wystawca]-->
+<% end  %>
+
+<br>
+<%= link_to  'Wróć', :action => 'index' %>

@@ -1,0 +1,66 @@
+<%= javascript_include_tag "jmaki" -%> <%= jmaki_setup -%>
+
+<%= link_to "<h1> Menu główne </h2>", :controller => 'fakturka', :action => 'index' %>
+
+
+<hr>
+<h2> Lista dostępnych towarów </h2>
+<% if params[:idp] %>
+<%= link_to 'Nowy towar', :action => 'new', :poz => params[:idp]%>
+<% else %>
+<%= link_to 'Nowy towar', :action => 'new' %>
+<% end %>
+<br><br>
+<%= text_field_tag :nt %>
+<br/><br/>
+<%= observe_fields("nt", :frequency => 1, :url => {:action => "search_for_item"},  :update => "search_result")%>
+
+<div id="search_result">
+
+
+</div>
+
+
+<table BORDER=1 CELLPADDING=3 CELLSPACING=1 RULES=ROWS FRAME=HSIDES>
+  <tr>
+  <th>Nazwa towaru:</th>
+  <th>Symbol towaru:</th>
+  <th>JM.</th
+
+  <th>Opis towaru:</th>
+  <th>Cena netto:</th>
+  <th>Vat:</th>
+  <th>Cena brutto:</th>
+  <th>Kwota podatku:</th>
+</tr>
+
+
+<% @towar.each do |t| %>
+<tr>
+<% if session['idp'] %>
+  <td><%= link_to "<font color=\"green\">#{t.nazwa_towaru}</font>", {:controller => "fakturka", :action=>'dodaj', :id => t.id, :poz => session['idp']} %></td>
+<% else %>
+<td><%= link_to t.nazwa_towaru, :action=>'show', :id => t.id %> </td>
+<%end%>
+<td><%= t.symbol_towaru %> </td>
+<td><%= t.jm %> </td>
+<td><%= t.opis_towaru %></td>
+<td><%= display_s(t.cena_netto.to_f) %> </td>
+<td><%= t.podatek %>   </td>
+<td><%= display_s(t.cena_brutto.to_f) %> </td>
+<td><%= display_s(t.cena_brutto.to_f - t.cena_netto.to_f) %> </td>
+<td><%= link_to "Zmień", :action=>'edit', :id => t.id %> </td>
+<td><%= link_to "Usuń", :action=>'destroy', :id => t.id %> </td>
+<% if session['idp'] %>
+<td><%= link_to "Zobacz", :action=>'show', :id => t.id %> </td>
+<% end %>
+</tr>
+
+<% end %>
+<%#= will_paginate @towar %>
+</table>
+<% if session['idp'] %><br>
+<%= link_to "<font color='red'>Wróć do faktury</font>", :controller=> 'fakturka', :action => 'new' %>
+<% end %>
+<%= set_focus 'nt' %>
+

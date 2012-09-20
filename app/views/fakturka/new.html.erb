@@ -1,0 +1,200 @@
+
+<HTML>
+<%= javascript_include_tag "jmaki" -%> <%= jmaki_setup -%>
+<head>
+ <%= calendar_date_select_includes :style => "red", :format=>:finnish , :locale=>'pl' %>
+  <script>
+      function showPreloading() {
+          var preloadingDiv = document.getElementById("preloading");
+          preloadingDiv.style.display = "block";
+          window.location = "new";
+      }
+
+  </script>
+</head>
+<BODY>
+<%= link_to "Wróc", :action=>'list' %>
+<%= link_to "<font color='red'>Wyczyść fakture</font>", {:action => 'reset', :id => 'f'} %>
+<% form_tag "zapisz" do %>
+  <% if session['poz'] %>
+    <%= hidden_field_tag 'poz', session['poz']%>
+  <% end %>
+  <table border='1' bgcolor='white' align='center' width='80%'>
+    <tr>
+      <th align='center'>Sprzedawca:</th>
+
+      <th align='center'>Odbiorca:</th>
+      <th align='center'>Faktura VAT nr: <%= text_field_tag 'nazwa', session['nr_f'] %></th>
+
+    </tr>
+    <tr>
+      <td>  <center><%= link_to 'Wybierz wystawce faktury', :controller => 'wystawca', :action => 'index', :f => 'tak'%></center><br>
+        <small> <% if @wystawca %>
+            <b> <%=  @wystawca.nazwa %></b><br><br>
+            <%= @wystawca.kod %> <%= @wystawca.miejscowosc%> <br>
+            <%= @wystawca.ulica_nr %><br>
+          <% if @wystawca.nip!="" %>
+			NIP: <%=  @wystawca.nip %><br><br>
+		<% end %>
+		<% if @wystawca.regon!="" %>
+          Regon: <%=  @wystawca.regon %><br><br>
+		<% end %>
+</small>
+        <%end%>
+
+      </td>
+
+      <td>
+        <center><%= link_to 'Wybierz odbiorce faktury', :controller => 'kontrahent', :action => 'index', :f => 'tak'%></center><br>
+        <small>    <% if @kontrahent %>
+            <b> <%=  @kontrahent.nazwa %></b><br><br>
+            <%= @kontrahent.kod %> <%= @kontrahent.miejscowosc%> <br>
+            <%= @kontrahent.ulica_nr %><br>
+            <% if @kontrahent.panstwo == "Polska" %>
+             <% if @kontrahent.regon!="" %>
+		Regon: <%= @kontrahent.regon %><br />
+		<% end %>
+		<% if @kontrahent.nip!="" %>
+            NIP: <%=  @kontrahent.nip %>
+		<% end %>
+
+            <% else %>
+              <% if @kontrahent.regon!="" %>
+		<%= @kontrahent.regon %><br />
+		<% end %>
+		<% if @kontrahent.nip!="" %>
+            <%=  @kontrahent.nip %><br />
+		<% end %>
+
+              Samochód: <%= @kontrahent.auto %>
+            <% end  %>
+          <%end%>
+        </small>
+      </td>
+      <td align='center'>Miejsce wystawienia: <%= text_field_tag 'm_w', session['m_w']%>
+
+        <br><br>
+        Data wystawienia: <%= calendar_date_select_tag "data_w", session["data_w"]%>
+        <br><br>
+        Data sprzedaży:<%= calendar_date_select_tag "data_s", session["data_s"]%>
+
+    </td></tr>
+    <% if @wystawca %>
+      <tr>
+        <td colspan = '5'> <%= @wystawca.bank%><br><%= @wystawca.nr_konta %>  </td>
+      </tr>
+    <% end %>
+  </table>
+  <br><br>
+  <!-- <td align="center"><h2><%= link_to "Dodaj nowy towar", {:controller => "towar",:action=>"new", :idp => @t}, :popup=>["Lista towarów/usług", "height=600,width=600"] %></h2></td> -->
+  <br><br>
+  <table border='1' bgcolor='white' width="100%" align='center'>
+  <tr>
+    <td align='center' width='1%'>LP</td>
+    <td align='center' width="2%">Nazwa towaru - usługa</td>
+    <td align='center' width="2%">Kod</td>
+    <td align='center' width="2%">Ilość</td>
+    <td align='center' width="2%">JM</td>
+    <td align='center' width="2%">Cena netto</td>
+    <td align='center' width="2%">Vat</td>
+    <td align='center' width="2%">Cena brutto</td>
+    <td align='center' width="2%">Wartość brutto</td>
+  </tr>
+
+  <tr>
+  <% 0.upto(@t.to_i - 1) do |i, index| %>
+    <tr>
+      <td align="center" width="1%"> <%= i+1 %> </td>
+      <%= hidden_field_tag "id_#{i}", @pozycja["id_#{i}"] %>
+      <%= hidden_field_tag "id_t_#{i}", @pozycja["id_t_#{i}"] %>
+      <%= hidden_field_tag "h_podatek#{i}", @pozycja["podatek_#{i}"] %>
+      <td align="center" width="2%"><%= text_field_tag "nazwa#{i}", @pozycja["nazwa_towaru_#{i}"], :size=>15 %></td>
+      <td align="center" width="2%"><%= text_field_tag "kod#{i}", @pozycja["symbol_towaru_#{i}"], :size=> 5%></td>
+      <td align="center" width="2%"><%= text_field_tag "ilosc#{i}", @pozycja["t_ilosc_towaru_#{i}"], :size=>5 %></td>
+      <td align="center" width="2%"><%= text_field_tag "jm_#{i}", @pozycja["jm_#{i}"], :size=>5%></td>
+      <td align="center" width="2%"><%= text_field_tag "cena_netto#{i}",display_s(@pozycja["cena_netto_#{i}"].to_f), :size=>10 %></td>
+      <td align="center"  width="2%"><%= text_field_tag "podatek#{i}",@pozycja["podatek_#{i}"], :size=>2 %></td>
+      <td align="center" width="2%"> <%= text_field_tag "cena_brutto#{i}",display_s(@pozycja["cena_brutto_#{i}"].to_f), :size=>10 %></td>
+      <td align="center" width="2%"><div id="brutto<%=i%>"><%= display_s(@pozycja["suma_brutto_#{i}"].to_f)%> </div></td>
+      <td align="center" width="2%"><%= link_to "Usuń", {:action=>"remove", :id => @pozycja["id_#{i}"], :id_t => @pozycja["id_t_#{i}"], :idp=>@t}, :confirm=>"Czy napewno usunać #{@pozycja["nazwa_towaru_#{i}"]} towar z faktury?" %>
+      <%= observe_fields(["nazwa#{i}","kod#{i}", "cena_netto#{i}", "cena_brutto#{i}", "ilosc#{i}","podatek#{i}"], :frequency => 1, :update => "brutto#{i}",  :url => {:controller=>"fakturka",  :action => "licz_sume_brutto", :i=> "#{i}", :id_t=>@pozycja["id_t_#{i}"], :id => @pozycja["id_#{i}"],  :n => true, :on=>'changed'}) %>
+      <%= observe_fields(["jm_#{i}"], :frequency => 1, :url=> {:controller => "fakturka",  :action => "jm", :i => "#{i}", :id_t => @pozycja["id_t_#{i}"],  :id => @pozycja["id_#{i}"]}) %>
+      <%= observe_fields(["nazwa#{i}", "kod#{i}", "cena_netto#{i}", "ilosc#{i}","podatek#{i}"], :frequency => 1, :update => "brutto#{i}",  :url => {:controller=>"fakturka",  :action => "licz_sume_brutto", :i=> "#{i}", :id_t=>@pozycja["id_t_#{i}"], :id => @pozycja["id_#{i}"], :b => true, :on=>'changed'})%>
+    </tr>
+
+  <%  end %>
+
+  <td colspan='9' align="center"><br><h3><%= link_to 'Załącz towar do faktury ', {:controller => 'towar',:action=>'list', :idp => @t}  %> <%= hidden_field_tag  'ukryty' %><br><br></h3>
+  </td>
+  <tr><td align='center' colspan='9'> <br><br><center><small><font color="red">*Prosze "Przeliczyć" przed zapisaniem faktury</font></small><br><center>
+  <a href="#" onclick="javascript:showPreloading();"><h3><b>Przelicz</b></a></center><br><br></center>  <br><br></h3></td>
+  </tr>
+  </table>
+  <table border='1' bgcolor='white' width="100%" align='center'>
+    <tr>
+      <td align='center' width="2%">Faktura</td>
+      <td align='center' width="2%">Forma płatności</td>
+      <td align='center' width="2%">Termin</td>
+      <td align='center' width="2%">Rabat</td>
+      <td align='center' width="2%"></td>
+      <td align='center' width="2%">St.</td>
+      <td align='center' width="2%">Netto</td>
+      <td align='center' width="2%">Vat</td>
+      <td align='center' width="2%">Brutto</td>
+    </tr>
+    <tr>
+      <td align="center" width="2%"><%= select "oplacona","", ["Zapłacona", "Zaległa"] %> </td>
+      <td align="center" width="2%"><%= select "fakturka","", ["Gotówka", "Karta", "Przelew"] %> </td>
+      <td align="center" width="2%">
+        <%= calendar_date_select_tag "termin", session['termin'] %>
+        <%= observe_fields(["termin", "m_w", "data_s", "data_w", "nazwa"], :frequency => 0.5,  :url => {:controller=>"fakturka",  :action => "termin"}) %>
+      </td>
+      <td align="center"><%= select 'rabat','', ["0", "5", "10", "15"] %> % </td>
+      <td></td>
+      <td align="center">
+        <%=  @w_pod %>
+      </td>
+      <td align="center"><%= display_s(@w_netto)  %>
+      </td>
+      <td align="center">
+
+        <%= display_s(@w_vat) %><br>
+      </td>
+      <td align='center'><%= display_s(@w_brutto) %>
+
+      </td>
+
+    </tr>
+    <tr>
+
+      <td colspan='9'><br>
+        <h3>Razem do zapłaty: <%= display_s(@suma_faktury) %> zł<br><div id="porabacie"><%= @porabacie %></div></h3>
+        <br><br>
+        <%= observe_fields(["rabat_"], :frequency => 0.5, :update => "porabacie",  :url => {:controller=>"fakturka",  :action => "rabat"}) %>
+
+        Słownie: <%= @sf_text %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan='3' align='center'><br><br><br>................................................<br>
+      <p>Podpis osoby upoważnionej do odebrania faktury</p></td>
+      <td colspan='3' align='center'><br><br><br>................................................ <br>
+      <p>Data odbioru</p></td>
+      <td colspan='3' align='center'><br><br><br>...............................................<br>
+
+      <p>Podpis osoby upoważnionej do wystawienia faktury</p></td>
+
+    </tr>
+    <tr><td colspan="9">Uwagi:<br>
+      <%= text_area_tag :uwagi, session['uwagi'], :rows=>3, :cols=>173%></td></tr>
+    <%= observe_fields(["uwagi"], :frequency=>0.5, :url=>{:controller => "fakturka", :action => "uwagi", }) %>
+    <tr>
+      <td colspan='9' align='center'><h2><%= submit_tag "Zapisz" %> </h2></td>
+    </tr>
+  <% end %>
+</table>
+<div id="preloading" style="filter: Alpha(opacity=80); opacity: .8;position: absolute; left:0px; top: 0px; width: 100%; height: 100%; background-color: #eee; display:none;"><center><h2><br><br>Trwa przeliczanie...</h2></center></div>
+
+ <%= set_focus "termin" %>
+ <%= set_focus "ilosc#{@t.to_i-1}"  %>
+

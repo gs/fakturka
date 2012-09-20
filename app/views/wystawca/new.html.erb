@@ -1,0 +1,14 @@
+<%= error_messages_for 'wystawca' %>
+
+<h2> Dodanie nowego odbiorcy </h2>
+
+<% form_tag :action =>'create' do %>
+    <%= render :partial => 'form' %>
+<!--[form:wystawca]-->
+
+    <%= submit_tag 'Zapisz'%>
+<!--[eoform:wystawca]-->
+<% end  %>
+
+<br/>
+<%= link_to  'Wróć', :action => 'list' %>

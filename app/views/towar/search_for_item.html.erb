@@ -1,0 +1,24 @@
+	<% if !@towary.blank? %>
+	  <% for item in @towary %>
+	  <table>
+	  <tr>
+
+	  <% if session['idp'] %>
+	  <td>
+  * <%= link_to "<font color=\"green\">#{item.nazwa_towaru}</font>", {:controller => "fakturka", :action=>'dodaj', :id => item.id, :poz => session['idp']} %><br>
+  </td>
+	<% else %>
+	<td><%= link_to item.nazwa_towaru, :action=>'show', :id => item.id %> </td>
+	<%end%>
+	<td>&nbsp; - &nbsp;<%= item.opis_towaru %></td>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   <td><%= link_to "Zmień", :action=>'edit', :id => item.id %> </td>
+		<td><%= link_to "Usuń", :action=>'destroy', :id => item.id %> </td>
+
+	  <% end %>
+	  </tr>
+	  <table>
+	<hr />
+	<br/><br/>
+	<% end %>
+

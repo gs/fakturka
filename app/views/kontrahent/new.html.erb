@@ -1,0 +1,14 @@
+<%= error_messages_for 'kontrahent' %>
+
+<h2> Dodanie nowego odbiorcy </h2>
+
+<% form_tag :action =>'create' do %>
+    <%= render :partial => 'form' %>
+<!--[form:kontrahent]-->
+
+    <%= submit_tag 'Zapisz'%>
+<!--[eoform:kontrahent]-->
+<% end  %>
+
+<br>
+<%= link_to  'Wróć', :action => 'index' %>

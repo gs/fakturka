@@ -1,0 +1,8 @@
+<% for column in Towar.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @towar.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Zmień',:action => 'edit', :id => @towar %> |
+<%= link_to 'Wróć', :action => 'index' %>

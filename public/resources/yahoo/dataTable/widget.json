@@ -1,0 +1,72 @@
+ {
+    "name": "DataTable",
+    "type": "yahoo",
+    "author" : "Greg Murray",
+    "authorURL" : "http://weblogs.java.net/blog/gmurray71/",
+    "version": "1.1",
+    "jmakiVersion": "1.8",    
+    "image": "images/yahoo-dataTable.jpg",
+    "docs": {
+         "modelURL" : "http://wiki.java.net/bin/view/Projects/jMakiTableModel"
+     },
+    "description": "A data table widget which can be changed using publish subscribe events.",
+    "args": [
+         {"rowSingleSelect":{"type":"BOOLEAN", "defaultValue": true, "description": "Turns on or off row selection."}},
+         {"columns":{"type":"ARRAY", "defaultValue": [], "description": "Column Names for the table."}},
+         {"paginated":{"type":"BOOLEAN", "defaultValue": false, "description": "Turns on or off client-side pagination."}},
+         {"rowsPerPage":{"type":"NUMBER", "defaultValue": 10, "description": "Number of rows displayed in a page."}}
+    ],
+    "value": {"required":"false", "type": "OBJECT",
+             "defaultValue":{
+                "columns":[
+                              { "label" : "Title", "id" : "title"},
+                              { "label":"Author", "id" : "author"},
+                              { "label": "ISBN #", "id" : "isbn"},
+                              { "label": "Description", "id" : "description"}
+                              ],
+                "rows":[
+                        { "title" : "Book Title 1", "author" : "Author 1", "isbn": "4412", "description" : "A Some long description"},
+                        { "id" : "foo", "title" : "Book Title 2", "author" : "Author 2", "isbn": "4412", "description" : "A Some long description"}
+                       ]
+             },
+             "description":"An object containing a object of colums and array of row arrays to be added to the table."
+         },    
+    "config" : {
+        "type" :
+           { "id" : "yahoo.dataTable", 
+             "libs" : [
+                   "../resources/libs/yahoo/v2.5.2/yahoo/yahoo-min.js",
+                   "../resources/libs/yahoo/v2.5.2/dom/dom-min.js",
+                    "../resources/libs/yahoo/v2.5.2/event/event-min.js",
+                   "../resources/libs/yahoo/v2.5.2/element/element-beta-min.js",
+                   "../resources/libs/yahoo/v2.5.2/datasource/datasource-beta-min.js",
+                   "../resources/libs/yahoo/v2.5.2/datatable/datatable-beta-min.js"
+               ],
+              "styles" : [
+                 "../resources/libs/yahoo/v2.5.2/datatable/assets/skins/sam/datatable.css"
+               ],
+               "resources" : [
+                 "../resources/libs/yahoo/v2.5.2/datatable/assets/skins/sam/",
+                 "../resources/libs/yahoo/v2.5.2/assets/"
+               ]
+        }
+    },
+       "topicInfo": {
+       "defaultPublish" : "/yahoo/dataTable",       "defaultSubscribe" : ["/yahoo/dataTable", "/table"],
+      "commands" : [
+          {"name" : "addRows",
+          "description" : "Adds multiple rows to the table."},
+          {"name" : "addRow",
+          "description" : "Adds one row to the table. "},
+          {"name" : "removeRow",
+          "description" : "Removes the row matching the provided id from the table. "},
+          {"name" : "updateRow",
+          "description" : "Updates the row matching the provided id in the table. "},
+          {"name" : "select",
+          "description" : "The Label of the item provided will be set as the value of the text field."
+          },
+          {"name" : "clear",
+          "description" : "Clears the table."
+          }
+      ],       "events" : [           {"name" :  "onSelect",           "description" : "publish the value of the selected row."}         ]    }
+  }

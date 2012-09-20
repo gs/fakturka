@@ -1,0 +1,9 @@
+{"config": {
+    "globalTheme": "kame",
+    "theme": "/resources/css/themes/kame/theme.css",
+    "glue": {"includes": [
+        "/glue.js",
+        "/resources/system-glue.js"
+    ]},
+    "version": "1.0"
+}}

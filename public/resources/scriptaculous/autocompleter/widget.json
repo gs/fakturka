@@ -1,0 +1,26 @@
+ {
+    "name": "Autocompleter",
+    "type": "scriptaculous",
+    "version": "1.8",
+    "jmakiVersion": "1.8",    
+    "image": "images/scriptaculus-autocompleter.jpg",
+    "description": "A autocomplete widget.",
+    "args": [
+         {"paramName": {"type":"STRING", "defaultValue": "query", "description":"The parameter name to use for get requests"}}
+     ],    
+    "config" : {
+        "type" :
+	{"id": "scriptaculous",
+         "version": "1.6.4",
+         "libs": [
+                  "../resources/libs/scriptaculous/v1.6.4/prototype.js",
+                  "../resources/libs/scriptaculous/v1.6.4/scriptaculous.js",
+                  "../resources/libs/scriptaculous/v1.6.4/dragdrop.js",
+                  "../resources/libs/scriptaculous/v1.6.4/effects.js",
+                  "../resources/libs/scriptaculous/v1.6.4/builder.js",
+                  "../resources/libs/scriptaculous/v1.6.4/slider.js",
+                  "../resources/libs/scriptaculous/v1.6.4/controls.js"
+                 ]
+        }
+    }
+  }

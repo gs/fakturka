@@ -1,0 +1,126 @@
+body2 { background-color: #ffff; color: #333; }
+body { background-color: #aac4dc; color: #333; }
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  color: #04398a;
+  font-size:   12px;
+  line-height: 15px;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a { color: #04398a; }
+a:visited { color: #04398a; }
+a:hover { color: #fff; background-color:#cbe7ff; 
+  font-family: verdana, arial, helvetica, sans-serif;
+}
+
+.fieldWithErrors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}
+
+div.uploadStatus {
+  margin: 5px;
+}
+
+div.progressBar {
+  margin: 5px;
+}
+
+div.progressBar div.border {
+  background-color: #fff;
+  border: 1px solid grey;
+  width: 100%;
+}
+
+div.progressBar div.background {
+  background-color: #333;
+  height: 18px;
+  width: 0%;
+}
+
+
+.LastTitle { color:#244; font-weight:bold; font-size:x-large; }
+.ListAbout { color:#244; }
+div.ListImage { float:left; width:173px; margin:0 10px 0 0; }
+div.ListImage img { width:173px; border:none; }
+.ListCaption { font-style:italic; font-size:x-small; }
+.ListActions { font-size:x-small; text-align:right; padding-left:1em; float:right; }
+.ListLine0 { background: #f9f9f9; }
+.ListLine1 { background: #cbe7ff; }
+
+#.ListLine0 { background: #ffffff; }
+#.ListLine1 { background: #BBB; }
+
+.ListLine0, .ListLine1 { padding:10px; border:2px solid #333; margin:20px; }
+h1 { text-align:center; }
+#wrap { width:787px; margin:10px auto; background:#FFF; border:4px solid #444; }
+#wrap2 { padding:10px; }
+
+
+.pagination {
+    padding: 3px;
+    margin: 3px;
+  }
+  .pagination a {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #aaaadd;
+    text-decoration: none;
+    color: #000099;
+  }
+  .pagination a:hover, .pagination a:active {
+    border: 1px solid #000099;
+    color: #000;
+  }
+  .pagination span.current {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #000099;
+    font-weight: bold;
+    background-color: #000099;
+    color: #FFF;
+  }
+  .pagination span.disabled {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #eee;
+    color: #ddd;
+  }

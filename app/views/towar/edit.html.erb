@@ -1,0 +1,10 @@
+<h2>Edycja wybranego towaru</h2>
+
+<% form_tag :action => 'update', :id => @towar do %>
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Zmień' %>
+<% end %>
+
+<br>
+
+  <%= link_to 'Wróć', :action => 'list' %>

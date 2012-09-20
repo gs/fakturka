@@ -1,0 +1,9 @@
+
+<% form_tag :action =>'change' , :id => @kontrahent do %>
+<%= render :partial => 'form' %>
+    <%= submit_tag 'Zmień'%>
+<!--[eoform:kontrahent]-->
+<% end  %>
+
+<br>
+<%= link_to  'Wróć', :action => 'index' %>

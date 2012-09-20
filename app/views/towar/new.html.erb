@@ -1,0 +1,10 @@
+<h2>Dodaj nowy towar</h2>
+
+<%= hidden_field_tag "poz", params[:idp] %>
+<% form_tag :action=>'create' do %>
+    <%= render :partial => 'form' %>
+<br><br>
+    <%= submit_tag 'Zapisz' %>
+<% end %>
+<br><br>
+<%= link_to 'Wróć', :action => 'list' %>

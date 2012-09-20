@@ -1,0 +1,13 @@
+<% if @wyszukani_konrahenci -%>
+  <% for item in @wyszukani_konrahenci -%>
+    <% if session['f'] %>
+     * <%= link_to "<font color=\"green\">#{item.nazwa}</font>", :controller => 'fakturka', :action=>'kontrahent', :id=>item.id, :f => 'tak' %>
+    <% else %>
+      <%= link_to item.nazwa, :action=>'show', :id => item.id %>
+    <% end %>
+   &nbsp;   &nbsp;   &nbsp;   &nbsp;   &nbsp; <%= item.nip %>
+   &nbsp; &nbsp; &nbsp; <%= item.ulica_nr %>
+<br/>
+  <% end -%>
+<% end -%>
+

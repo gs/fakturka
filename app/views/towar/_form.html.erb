@@ -1,0 +1,28 @@
+<%= error_messages_for 'towar' %>
+
+<p><label for="towar_nazwa_towaru">Nazwa towaru</label><br/>
+<%= text_field 'towar', 'nazwa_towaru'  %></p>
+
+<p><label for="towar_symbol_towaru">Symbol towaru</label><br/>
+<%= text_field 'towar', 'symbol_towaru'  %></p>
+
+<p><label for="towar_opis_towaru">Opis towaru</label><br/>
+<%= text_area 'towar', 'opis_towaru', :cols=>25, :rows=>5  %></p>
+
+<p><label for="towar_ilosc_towaru">Ilosc towaru</label><br/>
+<%= text_field 'towar', 'ilosc_towaru'  %></p>
+
+<p><label for="towar_jm">Jednostka miary:</label><br />
+<%= select("towar", "jm", ["SZT.", "OP."]) %></p>
+
+<p><label for="towar_cena_netto">Cena netto</label><br/>
+<%= text_field 'towar', 'cena_netto'  %></p>
+
+<p><label for="towar_podatek">Vat:</label><br/>
+<%= select("towar","podatek", ["0","5","8", "23"]) %> %
+
+<p><label for="towar_cena_brutto">Cena Brutto:</label><br />
+<div id='cena_brutto'></div>
+<%= observe_fields(["towar_cena_netto", "towar_podatek"], :frequency => 0.5, :update => "cena_brutto",  :url => {:controller=>"towar", :action => 'licz_brutto', :id => @towar.id}) %>
+<!--[eoform:towar]-->
+
