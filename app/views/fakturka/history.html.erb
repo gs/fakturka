@@ -1,4 +1,7 @@
-<div><%= link_to "Wróć", :action => 'firma' %></div> <div align='right'><%= link_to "Suma faktur za okres", :action => 'podlicz', :id_w => @id_w %></div>
+<div>
+  <span style='float:left'><%= link_to "Wróć", :action => 'firma' %></span>
+  <span style='float:right'><%= link_to "Suma faktur za okres", :action => 'podlicz', :id_w => @id_w %></span>
+</div>
 <br><br>
 <% if @zalegle != 0%> Ilosc faktur nie opłaconych: <font color='red'><%= @zalegle %></font><% end %>
 <h2> Faktury Wystawione </h2>
