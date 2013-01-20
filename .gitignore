@@ -3,3 +3,4 @@ db/fakturka_dev.db
 db/baza/*
 backup/*
 tags
+.rvmrc
