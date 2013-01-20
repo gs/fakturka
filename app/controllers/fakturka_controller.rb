@@ -135,17 +135,16 @@ class FakturkaController < ApplicationController
       @pozycja["cena_netto_#{i}"] = item.cena_netto
       @pozycja["podatek_#{i}"] = item.podatek
       @pozycja["t_ord{@p}"] = item.t_ord
-      @pozycja["cena_brutto_#{i}"] = item.cena_netto.to_f * (1 + item.podatek.to_f / 100)
-      @pozycja["suma_brutto_#{i}"] = (item.cena_netto.to_f * item.t_ilosc_towaru.to_f) * (1 + (item.podatek.to_f / 100))
+      @pozycja["cena_brutto_#{i}"] = item.cena_brutto.to_f
+      @pozycja["suma_brutto_#{i}"] = item.cena_brutto.to_f * item.t_ilosc_towaru.to_f
       @suma_faktury+= @pozycja["suma_brutto_#{i}"].to_f
     end
     @podlicz_sume = Tymczasowa.find_by_sql("select t_nazwa_towaru as nazwa_towaru, t_cena_netto as s_cena_netto, t_podatek as podatek, t_cena_brutto as s_cena_brutto,  t_ilosc  as t_ilosc_towaru from tymczasowa where t_user_id = #{@p}")
     @podlicz_sume.each do |item|
       @w_pod = item.podatek
       @w_netto += item.s_cena_netto.to_f * item.t_ilosc_towaru.to_f
-      @w_vat += (item.s_cena_netto.to_f * item.t_ilosc_towaru.to_f) * (item.podatek.to_f / 100)
-      @w_brutto += (item.s_cena_netto.to_f * item.t_ilosc_towaru.to_f) *(1+(item.podatek.to_f/100))
-
+      @w_vat += (item.s_cena_brutto.to_f * item.t_ilosc_towaru.to_f)
+      @w_brutto += (item.s_cena_brutto.to_f * item.t_ilosc_towaru.to_f)
     end
   end
 
@@ -182,35 +181,34 @@ class FakturkaController < ApplicationController
     i = params[:i]
     @id = params["id"]
     @id_t = params["id_t"]
-    if params["cena_netto#{i}"]!="" && params["podatek#{i}"]!="" && params["cena_brutto#{i}"]!="" && params["ilosc#{i}"]!="" && params["cena_netto#{i}"]!~/\,/ && params["cena_brutto#{i}"]!~/\,/
+    if (params["cena_netto#{i}"]!="" && params["cena_netto#{i}"]!~/\,/) || (params["cena_brutto#{i}"]!=""  && params["cena_brutto#{i}"]!~/\,/) \
+        && params["podatek#{i}"]!="" && params["ilosc#{i}"]!=""
       @nazwa_towaru = params["nazwa#{i}"]
       @symbol_towaru = params["kod#{i}"]
       @netto = params["cena_netto#{i}"].to_f
       @podatek = params["podatek#{i}"]
       @brutto = params["cena_brutto#{i}"].to_f
-    #  @netto = @netto.gsub!(",",".") if @netto=~/\,/
-    #  @brutto = @brutto.gsub!(",",".") if @brutto=~/\,/
       @podatek2 = (@podatek.to_f/100)+1
-      if params[:n]
+      if params[:n].present?
         if @podatek2 == 1.0
           @brutto = display_s(@netto.to_f)
         else
-          @netto =  @brutto.to_f / @podatek2.to_f
-          @netto = display_s(@netto.to_f)
+          @brutto =  @netto.to_f * @podatek2.to_f
+          @brutto = display_s(@brutto.to_f)
         end
-      elsif params[:b]
-        @brutto = @podatek2.to_f * @netto.to_f
+      elsif params[:b].present?
+        @netto = @brutto.to_f / @podatek2.to_f
         @brutto = display_s(@brutto.to_f)
       end
       @podatek=display_s(@podatek.to_f)
-      if params["ilosc#{i}"]
+     if params["ilosc#{i}"]
         @ilosc = params["ilosc#{i}"]
         Tymczasowa.find_by_sql("Update tymczasowa set t_nazwa_towaru = \"#{@nazwa_towaru}\", t_symbol_towaru = \"#{@symbol_towaru}\", t_ilosc = #{@ilosc}, t_cena_netto = #{@netto}, t_podatek=#{@podatek}, t_cena_brutto=#{@brutto} where id_t = #{@id_t} and id = #{@id} and t_user_id = #{@p}")
         # render :text => "#{@podatek2}, #{@netto}, #{@brutto} "
-        render :text => display_s((@netto.to_f * @ilosc.to_f) * @podatek2.to_f)
+        render :text => display_s((@brutto.to_f * @ilosc.to_f))
       else
         Tymczasowa.find_by_sql("Update tymczasowa set t_nazwa_towaru = \"#{@nazwa_towaru}\" , t_symbol_towaru = \"#{@symbol_towaru}\", t_cena_netto = #{@netto}, t_podatek=#{@podatek}, t_cena_brutto=#{@brutto} where id_t = #{@id_t} and id = #{@id} and t_user_id = #{@p}")
-        render :text => display_s((@netto.to_f * @ilosc.to_f) * @podatek2.to_f)
+        render :text => display_s((@brutto.to_f * @ilosc.to_f))
       end
     else
     if params["cena_netto#{i}"] =~/\,/ || params["cena_brutto#{i}"] =~ /\,/
@@ -476,7 +474,7 @@ class FakturkaController < ApplicationController
       to = params[:to].to_date
       id_w = params[:id_w].to_i
       @suma = Wystawca.find_by_sql(["select SUM(f_ilosc_towaru* f_ctn) AS netto,
-                                SUM(f_ilosc_towaru * f_ctb) AS brutto, 
+                                SUM(f_ilosc_towaru * f_ctb) AS brutto,
                                 pod
                                 FROM faktury WHERE created_on >= ?
                                 AND created_on < ?

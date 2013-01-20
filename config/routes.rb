@@ -1,8 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :kontrahent
 
-  map.resources :kontrahent
-
+  map.root :controller => 'login', :action => 'index'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
