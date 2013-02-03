@@ -477,7 +477,7 @@ class FakturkaController < ApplicationController
                                 SUM(f_ilosc_towaru * f_ctb) AS brutto,
                                 pod
                                 FROM faktury WHERE created_on >= ?
-                                AND created_on < ?
+                                AND created_on <= ?
                                 AND id_wystawcy = ? GROUP BY pod;", from, to, id_w])
 
       @suma
