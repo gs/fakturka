@@ -201,7 +201,7 @@ class FakturkaController < ApplicationController
         @brutto = display_s(@brutto.to_f)
       end
       @podatek=display_s(@podatek.to_f)
-     if params["ilosc#{i}"]
+      if params["ilosc#{i}"]
         @ilosc = params["ilosc#{i}"]
         Tymczasowa.find_by_sql("Update tymczasowa set t_nazwa_towaru = \"#{@nazwa_towaru}\", t_symbol_towaru = \"#{@symbol_towaru}\", t_ilosc = #{@ilosc}, t_cena_netto = #{@netto}, t_podatek=#{@podatek}, t_cena_brutto=#{@brutto} where id_t = #{@id_t} and id = #{@id} and t_user_id = #{@p}")
         # render :text => "#{@podatek2}, #{@netto}, #{@brutto} "
@@ -211,13 +211,14 @@ class FakturkaController < ApplicationController
         render :text => display_s((@brutto.to_f * @ilosc.to_f))
       end
     else
-    if params["cena_netto#{i}"] =~/\,/ || params["cena_brutto#{i}"] =~ /\,/
-    	render :text => "<font color='red'>Nie dozwolony znak</font>"
-	else
-      render :text => "Prosze wypełnić pola"
-  end
+      if params["cena_netto#{i}"] =~/\,/ || params["cena_brutto#{i}"] =~ /\,/
+        render :text => "<font color='red'>Nie dozwolony znak</font>"
+      else
+        render :text => "Prosze wypełnić pola"
+      end
     end
   end
+
   def remove
     begin
       @id_t = params["id_t"]
@@ -265,7 +266,6 @@ class FakturkaController < ApplicationController
       redirect_to :action => "new", :msg => "Proszę wpisać ilość towaru dla każdej pozycji"
 
     else
-      i = params[:i]
       @nr_faktury = session['nr_f']
       @id_w = session['id_w']
       @id_k = session['id_k']

@@ -3,6 +3,7 @@
 
 <% @wystawca.each do |item| %>
 <hr>
-  <%= link_to item.nazwa, :action=>'history', :id_w => item.id %>, <%=item.ulica_nr %> <br><br>
+        <%= link_to item.nazwa, :action=>'history', :id_w => item.id %>, <%=item.ulica_nr %> <br><br>
+        
 <% end %>
 <hr>
